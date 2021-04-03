@@ -1,2 +1,0 @@
-# FoursquareClone
-# FoursquareClone
