@@ -23,8 +23,10 @@ class DetailsVC: UIViewController, MKMapViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        getDataFromParse()
         detailsMapView.delegate = self
+        
+        getDataFromParse()
+        
     
         }
     
@@ -52,15 +54,15 @@ class DetailsVC: UIViewController, MKMapViewDelegate {
                             self.detailsAtmosphereLabel.text = placeAtmosphere
                         }
                         
-                        if let placeLatitude = choosenPlaceObject.object(forKey: "latitude") as? String {
-                            if let placeLatitudeDouble = Double(placeLatitude) {
-                                self.chosenLatitude = placeLatitudeDouble
-                            }
+                        if let placeLatitude = choosenPlaceObject.object(forKey: "latitude") as? Double {
+                            
+                                self.chosenLatitude = placeLatitude
+                            
                         }
-                        if let placeLongitude = choosenPlaceObject.object(forKey: "longitude") as? String {
-                            if let placeLongitudeDouble = Double(placeLongitude) {
-                                self.chosenLongitude = placeLongitudeDouble
-                            }
+                        if let placeLongitude = choosenPlaceObject.object(forKey: "longitude") as? Double {
+                            
+                                self.chosenLongitude = placeLongitude
+                            
                         }
                         
                         if let imageData = choosenPlaceObject.object(forKey: "image") as? PFFileObject {
@@ -82,8 +84,8 @@ class DetailsVC: UIViewController, MKMapViewDelegate {
                         
                         let annotation = MKPointAnnotation()
                         annotation.coordinate = location
-                        annotation.title = self.detailsNameLabel.text
-                        annotation.subtitle = self.detailsTypeLabel.text
+                        annotation.title = self.detailsNameLabel.text!
+                        annotation.subtitle = self.detailsTypeLabel.text!
                         self.detailsMapView.addAnnotation(annotation)
                         
                     }
@@ -95,51 +97,7 @@ class DetailsVC: UIViewController, MKMapViewDelegate {
         
     }
 
-    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        if annotation is MKUserLocation {
-            return nil
-        }
-        
-        let reuseId = "pin"
-        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId)
-        
-        if pinView == nil {
-            pinView = MKAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
-            pinView?.canShowCallout = true
-            let button = UIButton(type: .detailDisclosure)
-            pinView?.rightCalloutAccessoryView = button
-        } else {
-            
-            pinView?.annotation = annotation
-            
-        }
-        
-        return pinView
-        
-    }
     
-    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-        if self.chosenLongitude != 0.0 && self.chosenLatitude != 0.0 {
-            let requestLocation = CLLocation(latitude: self.chosenLatitude, longitude: self.chosenLongitude)
-            
-            CLGeocoder().reverseGeocodeLocation(requestLocation) { (placemarks, error) in
-                if let placemark = placemarks {
-                    if placemark.count > 0 {
-                        
-                        let mkPlaceMark = MKPlacemark(placemark: placemark[0])
-                        let mapItem = MKMapItem(placemark: mkPlaceMark)
-                        mapItem.name = self.detailsNameLabel.text
-                        
-                        let launchOptions = [MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving]
-                        
-                        mapItem.openInMaps(launchOptions: launchOptions)
-                        
-                   
-                    }
-                }
-            }
-            
-        }
-    }
+    
     
 }
